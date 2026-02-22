@@ -15,6 +15,7 @@ def home():
 @app.route('/usuarios', methods=['GET'])# consultar usuarios 
 def obtener_usuarios():
     try:
+        #cambio
         conn = obtener_conexion()
         usuarios = conn.execute("SELECT * FROM usuarios").fetchall()
         conn.close()
