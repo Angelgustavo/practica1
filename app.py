@@ -14,11 +14,14 @@ def home():
 
 @app.route('/usuarios', methods=['GET'])# consultar usuarios 
 def obtener_usuarios():
-    conn = obtener_conexion()
-    usuarios = conn.execute("SELECT * FROM usuarios").fetchall()
-    conn.close()
-
-    return jsonify([dict(u) for u in usuarios])
+    try:
+        
+        conn = obtener_conexion()
+        usuarios = conn.execute("SELECT * FROM usuarios").fetchall()
+        conn.close()
+        return jsonify([dict(u) for u in usuarios])
+    except sqlite3.OperationalError:
+        return jsonify({"error": "La tabla 'usuarios' no existe. Ejecuta la inicialización."}), 500
 
 @app.route('/usuarios', methods=['POST'])
 def agregar_usuario():
