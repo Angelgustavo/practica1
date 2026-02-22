@@ -1,5 +1,5 @@
 # PRACTICA1G4
-- App consulta saldo de acuerdo al número de cedula 
+-App consulta saldo de acuerdo al número de cedula 
 - Se aregan funciones:
   - conexión 
   - agregar nuevos usuarios
