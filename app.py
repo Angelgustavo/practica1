@@ -45,7 +45,7 @@ def agregar_usuario():
 
         if usuario_existente:
             conn.close()
-            return jsonify({"error": "Esta cédula ya está registrada"}), 409 # 409 Conflict
+            return jsonify({"error": "Esta cedula ya esta registrada"}), 409 # 409 Conflict
 
         # Si no existe, procedemos a insertar
         conn.execute("INSERT INTO usuarios (cedula, saldo) VALUES (?, ?)", 
@@ -53,7 +53,7 @@ def agregar_usuario():
         conn.commit()
         conn.close()
         
-        return jsonify({"mensaje": "Usuario creado con éxito"}), 201
+        return jsonify({"mensaje": "Usuario creado con exito"}), 201
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -62,7 +62,7 @@ def agregar_usuario():
 def consultar_saldo(cedula):
     # 1. Validación básica: que la cédula enviada sean solo números y tenga 10 dígitos
     if not cedula.isdigit() or len(cedula) != 10:
-        return jsonify({"error": "Formato de cédula inválido. Deben ser 10 dígitos numéricos."}), 400
+        return jsonify({"error": "Formato de cedula invalido. Deben ser 10 digitos numericos."}), 400
 
     try:
         conn = obtener_conexion()
