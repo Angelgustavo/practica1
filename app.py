@@ -25,16 +25,65 @@ def obtener_usuarios():
 
 @app.route('/usuarios', methods=['POST'])
 def agregar_usuario():
-    data = request.json
-    cedula = data["cedula"]
-    saldo = data["saldo"]
+    data = request.get_json(silent=True)
+    if not data:
+        return jsonify({"error": "Datos invalidos"}), 400
 
-    conn = obtener_conexion()
-    conn.execute("INSERT INTO usuarios (cedula, saldo) VALUES (?, ?)", (cedula, saldo))
-    conn.commit()
-    conn.close()
+    cedula = str(data.get("cedula", ""))
 
-    return jsonify({"mensaje":"Usuario agregado correctamente"})
+    # Validación de formato (10 dígitos)
+    if not cedula.isdigit() or len(cedula) != 10:
+        return jsonify({"error": "La cedula debe tener 10 digitos"}), 400
+
+    try:
+        conn = obtener_conexion()
+        
+        # VALIDACIÓN: Verificar si la cédula ya existe
+        usuario_existente = conn.execute(
+            "SELECT cedula FROM usuarios WHERE cedula = ?", (cedula,)
+        ).fetchone()
+
+        if usuario_existente:
+            conn.close()
+            return jsonify({"error": "Esta cedula ya esta registrada"}), 409 # 409 Conflict
+
+        # Si no existe, procedemos a insertar
+        conn.execute("INSERT INTO usuarios (cedula, saldo) VALUES (?, ?)", 
+                     (cedula, data.get("saldo", 0)))
+        conn.commit()
+        conn.close()
+        
+        return jsonify({"mensaje": "Usuario creado con exito"}), 201
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+@app.route('/usuarios/<cedula>', methods=['GET'])
+def consultar_saldo(cedula):
+    # 1. Validación básica: que la cédula enviada sean solo números y tenga 10 dígitos
+    if not cedula.isdigit() or len(cedula) != 10:
+        return jsonify({"error": "Formato de cedula invalido. Deben ser 10 digitos numericos."}), 400
+
+    try:
+        conn = obtener_conexion()
+        # 2. Buscamos al usuario por su cédula
+        usuario = conn.execute(
+            "SELECT saldo FROM usuarios WHERE cedula = ?", (cedula,)
+        ).fetchone()
+        conn.close()
+
+        # 3. Verificamos si el usuario existe
+        if usuario:
+            # usuario[0] contiene el saldo porque es la primera columna seleccionada
+            return jsonify({
+                "cedula": cedula,
+                "saldo": usuario[0]
+            }), 200
+        else:
+            return jsonify({"error": "Usuario no encontrado"}), 404
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080)
