@@ -1,4 +1,9 @@
 # PRACTICA1G4
+Integrantes 
+- Fausto Almeida
+- Angel Toapanta
+- Jessica Tipantuña
+
 CONSTRUCCIÓN DE API 
 - Código fuente del API(app.py)
 - Base de datos  SQLite( Basedatos.py)
@@ -25,5 +30,6 @@ Conenerización
 Despliegue Cloud
 ![contenedor levantado](con_levantado.jpg)
 ![url generada](url.publica.jpg)
+https://tarjeta-servicio-665250288038.us-central1.run.app/usuarios
 ![pruebas curl url publica](pruebas_curl_up.png)
 ![base de datos url publica](db_up.png)
